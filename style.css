@@ -1,0 +1,127 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Orbitron', sans-serif;
+    background: radial-gradient(ellipse at center, #0f0f0f 0%, #000000 100%);
+    color: #00ffe7;
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  .background-image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('./imagem/imagem-fundo.jpg') no-repeat center center/cover;
+    opacity: 0.1;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  section {
+    position: relative;
+    min-height: 100vh;
+    padding: 60px 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    border-top: 2px solid #00ffe7;
+    border-bottom: 2px solid #00ffe7;
+    box-shadow: 0 10px 20px -10px #00ffe733;
+  }
+
+  section:first-of-type {
+    border-top: none;
+  }
+
+  h1, h2, h3 {
+    text-shadow: 0 0 15px #00ffe7;
+  }
+
+  h1 {
+    font-size: 3rem;
+  }
+
+  h2 {
+    font-size: 2.5rem;
+    color: #00ffd0;
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+
+  p, li {
+    font-family: 'Poppins', sans-serif;
+    color: #ccf2f2;
+    font-size: 1.2rem;
+    line-height: 1.8;
+  }
+
+  strong {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    background: linear-gradient(90deg, #681d85c4, #ee0f0f, #00ff2a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  ul li::before {
+    content: "⚡ ";
+    color: #00ffe7;
+  }
+
+  footer {
+    text-align: center;
+    padding: 30px 15px;
+    color: #666;
+  }
+
+  #spaceship {
+    position: fixed;
+    width: 150px;
+    height: auto;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    pointer-events: none;
+  }
+
+  #gokugin {
+position: fixed;
+width: 180px; /* ligeiramente maior que a nave */
+height: auto;
+bottom: 40px;
+left: 50%;
+transform: translateX(-50%);
+z-index: 999; /* Atrás da nave */
+pointer-events: none;
+opacity: 0;
+transition: opacity 0.3s ease;
+}
+#particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; /* Fica atrás de tudo */
+    pointer-events: none; /* Mouse passa normalmente */
+  }
+  
