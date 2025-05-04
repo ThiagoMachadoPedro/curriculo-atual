@@ -115,13 +115,18 @@ pointer-events: none;
 opacity: 0;
 transition: opacity 0.3s ease;
 }
+
 #particles {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 0; /* Fica atrás de tudo */
-    pointer-events: none; /* Mouse passa normalmente */
+    z-index: 5; /* Fica atrás de tudo */
+    pointer-events: auto; /* Mouse passa normalmente */
+  }
+  .contato-area {
+    position: relative;
+    z-index: 10;
   }
   

@@ -80,84 +80,110 @@ window.addEventListener('load', () => {
     }
   });
   
-
-
-  // Seleciona o canvas e configura o contexto
-const canvas = document.getElementById('particles');
-const ctx = canvas.getContext('2d');
-
-// Ajusta o tamanho do canvas para preencher a tela
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
-
-// Mouse
-const mouse = {
-  x: canvas.width / 2,
-  y: canvas.height / 2
-};
-
-window.addEventListener('mousemove', function (event) {
-  mouse.x = event.clientX;
-  mouse.y = event.clientY;
-});
-
-// Classe Partícula
-class Particle {
-  constructor(x, y, size, color, speed) {
-    this.x = x;
-    this.y = y;
-    this.size = size;
-    this.color = color;
-    this.speed = speed;
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  
+  // Redimensionamento
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
   }
-
-  draw() {
-    ctx.fillStyle = this.color;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    ctx.closePath();
-    ctx.fill();
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+  
+  // Mouse
+  const mouse = { x: canvas.width / 2, y: canvas.height / 2 };
+  window.addEventListener('mousemove', (event) => {
+    mouse.x = event.clientX;
+    mouse.y = event.clientY;
+  });
+  
+  // Partícula
+  class Particle {
+    constructor(x, y, size, color) {
+      this.x = x;
+      this.y = y;
+      this.size = size;
+      this.color = color;
+      this.speed = Math.random() * 0.5 + 0.5;
+      this.velocityX = 0;
+      this.velocityY = 0;
+    }
+  
+    draw() {
+      ctx.save();
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = this.color;
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+  
+    update() {
+      // Segue o mouse se não tiver velocidade ativa
+      let dx = mouse.x - this.x;
+      let dy = mouse.y - this.y;
+      let angle = Math.atan2(dy, dx);
+  
+      // movimento suave
+      if (this.velocityX === 0 && this.velocityY === 0) {
+        this.x += Math.cos(angle) * this.speed;
+        this.y += Math.sin(angle) * this.speed;
+      } else {
+        // movimento de explosão
+        this.x += this.velocityX;
+        this.y += this.velocityY;
+  
+        // desaceleração com atrito
+        this.velocityX *= 0.95;
+        this.velocityY *= 0.95;
+  
+        if (Math.abs(this.velocityX) < 0.05) this.velocityX = 0;
+        if (Math.abs(this.velocityY) < 0.05) this.velocityY = 0;
+      }
+  
+      this.draw();
+    }
+  
+    explodeFrom(x, y) {
+      const angle = Math.atan2(this.y - y, this.x - x);
+      const power = Math.random() * 6 + 4;
+      this.velocityX = Math.cos(angle) * power;
+      this.velocityY = Math.sin(angle) * power;
+    }
   }
-
-  update() {
-    let dx = mouse.x - this.x;
-    let dy = mouse.y - this.y;
-    let angle = Math.atan2(dy, dx);
-
-    this.x += Math.cos(angle) * this.speed;
-    this.y += Math.sin(angle) * this.speed;
-
-    this.draw();
+  
+  // Inicialização
+  let particlesArray = [];
+  const numberOfParticles = 100;
+  
+  function init() {
+    particlesArray = [];
+    for (let i = 0; i < numberOfParticles; i++) {
+      const x = Math.random() * canvas.width;
+      const y = Math.random() * canvas.height;
+      const size = Math.random() * 2 + 1;
+      particlesArray.push(new Particle(x, y, size, 'white'));
+    }
   }
-}
-
-// Variáveis
-let particlesArray = [];
-const numberOfParticles = 100;
-
-// Inicializar partículas
-function init() {
-  particlesArray = [];
-  for (let i = 0; i < numberOfParticles; i++) {
-    let x = Math.random() * canvas.width;
-    let y = Math.random() * canvas.height;
-    let size = Math.random() * 2 + 1;
-    let speed = Math.random() * 0.5 + 0.5; // velocidade suave
-    particlesArray.push(new Particle(x, y, size, 'white', speed));
+  
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particlesArray.forEach(p => p.update());
+    requestAnimationFrame(animate);
   }
-}
-
-// Loop de animação
-function animate() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  particlesArray.forEach(particle => particle.update());
-  requestAnimationFrame(animate);
-}
-
-// Iniciar
-init();
-animate();
+  
+  // 💥 Explosão ao clicar
+  canvas.addEventListener('click', (e) => {
+    console.log('Clique detectado em:', e.clientX, e.clientY); 
+    const clickX = e.clientX;
+    const clickY = e.clientY;
+    particlesArray.forEach(p => p.explodeFrom(clickX, clickY));
+  });
+  
+  init();
+  animate();
+  
